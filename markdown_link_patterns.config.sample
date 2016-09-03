@@ -1,0 +1,2 @@
+/(?<![">])(https?://.*?(?=[\s\]\)\|]|$))/i   \1
+/bug[\s:#]+(\d{3,7})\b/i                     https://bugzilla.mozilla.org/show_bug.cgi?id=\1
