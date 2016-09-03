@@ -64,6 +64,9 @@ def sendmails(messages, app=None):
         sendmails_smtp(messages, fromaddress, app)
 
 def sendpost(fromaddress, recipientlist, post):
+    app = cherrypy.request.app
+    list_id = app.config['weeklyupdates'].get('email.list_id',
+                                              '<weekly-updates.mozilla.com>')
     subject = "Status Update: %s on %s" % (post.userid, post.postdate.isoformat())
 
     messages = []
@@ -72,7 +75,7 @@ def sendpost(fromaddress, recipientlist, post):
         message = email.mime.multipart.MIMEMultipart('alternative')
         message['To'] = recipient
         message['Subject'] = subject
-        message['List-Id'] = '<weekly-updates.mozilla.com>'
+        message['List-Id'] = list_id
 
         html, text = rendermail('message.xhtml', subject, post=post)
         message.attach(email.mime.text.MIMEText(text, 'plain', 'UTF-8'))
@@ -82,10 +85,14 @@ def sendpost(fromaddress, recipientlist, post):
     sendmails(messages)
 
 def getdigest(to, subject, posts):
+    app = cherrypy.request.app
+    list_id = app.config['weeklyupdates'].get('email.list_id',
+                                              '<weekly-updates.mozilla.com>')
+
     message = email.mime.multipart.MIMEMultipart('alternative')
     message['To'] = to
     message['Subject'] = subject
-    message['List-Id'] = '<weekly-updates.mozilla.com>'
+    message['List-Id'] = list_id
 
     html, text = rendermail('messagedigest.xhtml', subject, posts=posts)
     message.attach(email.mime.text.MIMEText(text, 'plain', 'UTF-8'))
@@ -94,6 +101,9 @@ def getdigest(to, subject, posts):
     return message
 
 def getnags(cur):
+    app = cherrypy.request.app
+    list_id = app.config['weeklyupdates'].get('email.list_id',
+                                              '<weekly-updates.mozilla.com>')
     for userid, usermail, lastpostdate in model.get_naglist(cur):
         nag = """This is a friendly reminder from the Mozilla Status Board. """
         if lastpostdate is None:
@@ -110,7 +120,7 @@ def getnags(cur):
         message = email.mime.text.MIMEText(nag, 'plain', 'UTF-8')
         message['To'] = usermail
         message['Subject'] = "Please post a status report"
-        message['List-Id'] = '<weekly-updates.mozilla.com>'
+        message['List-Id'] = list_id
         yield message
 
 def getdaily(cur):

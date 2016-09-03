@@ -10,6 +10,8 @@ feed.tag.domain = 'weeklyupdates.benjamin.smedbergs.us,2009-10-05'
 smtp.server = 'mymailserver'
 smtp.username = 'mymailuser'
 smtp.password = 'mymailpassword'
+mozilla = True
+email.list_id = 'weekly-updates.mozilla.com'
 
 [/]
 tools.sessions.timeout = 20160
