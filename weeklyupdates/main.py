@@ -82,11 +82,13 @@ class Root(object):
 
     @model.requires_db
     def feed(self):
+        app = cherrypy.request.app
+        title = app.config['weeklyupdates'].get('title',"Mozilla Status Board")
         feedposts = model.get_feedposts()
 
         return renderatom(feedposts=feedposts,
                           feedurl=cherrypy.url('/feed'),
-                          title="Mozilla Status Board Updates: All Users")
+                          title="%s Updates: All Users" % title)
 
     @model.requires_db
     def login(self, **kwargs):
@@ -154,11 +156,13 @@ class Root(object):
 
     @model.requires_db
     def userpostsfeed(self, userid):
+        app = cherrypy.request.app
+        title = app.config['weeklyupdates'].get('title',"Mozilla Status Board")
         feedposts = model.get_user_feedposts(userid)
 
         return renderatom(feedposts=feedposts,
                           feedurl=cherrypy.url('/feed/%s' % userid),
-                          title="Mozilla Status Board Updates: user %s" % userid)
+                          title="%s Updates: user %s" % (title,userid))
 
     @model.requires_db
     def userteamposts(self, userid):
@@ -171,11 +175,13 @@ class Root(object):
 
     @model.requires_db
     def userteampostsfeed(self, userid):
+        app = cherrypy.request.app
+        title = app.config['weeklyupdates'].get('title',"Mozilla Status Board")
         teamposts = model.get_teamposts(userid)
 
         return renderatom(feedposts=teamposts,
                           feedurl=cherrypy.url('/user/%s/teamposts/feed' % userid),
-                          title="Mozilla Status Board Updates: User Team: %s" % userid)
+                          title="%s Updates: User Team: %s" % (title,userid))
 
     @require_login
     @model.requires_db
@@ -352,11 +358,13 @@ class Root(object):
 
     @model.requires_db
     def projectfeed(self, projectname):
+        app = cherrypy.request.app
+        title = app.config['weeklyupdates'].get('title',"Mozilla Status Board")
         posts = model.get_project_posts(projectname)
 
         return renderatom(feedposts=posts,
                           feedurl=cherrypy.url('/project/%s' % projectname),
-                          title="Mozilla Status Board Updates: Project %s" % projectname)
+                          title="%s Updates: Project %s" % (title,projectname))
 
     def markup(self):
         return render('markup.xhtml')
