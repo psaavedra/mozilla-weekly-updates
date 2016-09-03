@@ -6,8 +6,9 @@ import cherrypy
 import human
 import json
 
-title = cherrypy.request.app.config['weeklyupdates'].get('title',
-                                        'Mozilla Status Board')
+title = cherrypy.request.app.config['weeklyupdates'].get('title','Mozilla Status Board')
+show_avatar = cherrypy.request.app.config['weeklyupdates'].get('avatar',True)
+
 ?>
 <div xmlns="http://www.w3.org/1999/xhtml"
      xmlns:py="http://genshi.edgewall.org/"
@@ -71,8 +72,11 @@ title = cherrypy.request.app.config['weeklyupdates'].get('title',
         </div>
       </py:when>
       <py:otherwise>
-        <h4 py:if="showuser" class="postuser"><a href="${genlink('user', post.userid)}">
-          <img class="avatar" src="https://avatars.io/email/${post.userid}" />${post.userid}</a>
+			<h4 py:if="showuser" class="postuser"><a href="${genlink('user', post.userid)}">
+          <py:if test="show_avatar">
+          <img class="avatar" src="https://avatars.io/email/${post.userid}" />
+          </py:if>
+          ${post.userid}</a>
           <small py:if="showdate" class="pull-right" title="Posted on ${post.postdate.isoformat()}">
             <span class="glyphicon glyphicon-time"></span>
             ${human.date(post.postdate, asdays=True)}
