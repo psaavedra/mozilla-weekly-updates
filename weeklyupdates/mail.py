@@ -104,8 +104,10 @@ def getnags(cur):
     app = cherrypy.request.app
     list_id = app.config['weeklyupdates'].get('email.list_id',
                                               '<weekly-updates.mozilla.com>')
+    title = app.config['weeklyupdates'].get('title',
+                                            'Mozilla Status Board')
     for userid, usermail, lastpostdate in model.get_naglist(cur):
-        nag = """This is a friendly reminder from the Mozilla Status Board. """
+        nag = """This is a friendly reminder from the %s. """ % title
         if lastpostdate is None:
             nag += "You have never made a post! "
         else:
