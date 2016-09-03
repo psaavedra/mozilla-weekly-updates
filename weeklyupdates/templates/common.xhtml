@@ -8,6 +8,7 @@ import json
 
 title = cherrypy.request.app.config['weeklyupdates'].get('title','Mozilla Status Board')
 show_avatar = cherrypy.request.app.config['weeklyupdates'].get('avatar',True)
+mozilla_site = cherrypy.request.app.config['weeklyupdates'].get('mozilla',True)
 
 ?>
 <div xmlns="http://www.w3.org/1999/xhtml"

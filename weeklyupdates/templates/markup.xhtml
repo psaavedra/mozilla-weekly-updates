@@ -15,7 +15,9 @@
     <p>The following extras are supported:
       <ul>
 	<li>Automatic linkifying: Anything that looks like a link starting with http: or https: will automatically be made into a link.</li>
+  <py:if test="mozilla_site">
 	<li>Automatic bug linkifying. Things like "bug 12345" will be auto-linked to bugzilla.mozilla.org.</li>
+  </py:if>
 	<li>Cuddled lists: a new line that starts with a start will be made into a list (normal markdown requires an intermediate blank line).</li>
 	<li>Disabled _emphasis_. Because MDN links and code snippets often contain embedded underscores, this was causing confusion and is disabled.</li>
       </ul>
