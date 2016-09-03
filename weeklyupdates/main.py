@@ -51,10 +51,14 @@ def kwargs_to_buglist(kwargs):
 class Root(object):
     @model.requires_db
     def index(self):
+        app = cherrypy.request.app
         loginid = cherrypy.request.loginid
 
         projects = model.get_projects()
-        iteration, daysleft = model.get_current_iteration()
+        if app.config['weeklyupdates'].get('mozilla', True):
+            iteration, daysleft = model.get_current_iteration()
+        else:
+            iteration, daysleft = 0,0
 
         if loginid is None:
             team = ()
@@ -67,7 +71,10 @@ class Root(object):
             team = model.get_user_projects(loginid)
             teamposts = model.get_teamposts(loginid)
             userposts, todaypost = model.get_user_posts(loginid)
-            bugs = model.get_currentbugs(loginid, iteration)
+            if app.config['weeklyupdates'].get('mozilla', True):
+                bugs = model.get_currentbugs(loginid, iteration)
+            else:
+                bugs = None
             recent = None
 
         return render('index.xhtml', projects=projects, recent=recent, team=team, bugs=bugs,
