@@ -106,6 +106,8 @@ def getnags(cur):
                                               '<weekly-updates.mozilla.com>')
     title = app.config['weeklyupdates'].get('title',
                                             'Mozilla Status Board')
+    url = app.config['weeklyupdates'].get('urlsite',
+                                          'http://statusupdates.dev.mozaws.net/')
     for userid, usermail, lastpostdate in model.get_naglist(cur):
         nag = """This is a friendly reminder from the %s. """ % title
         if lastpostdate is None:
@@ -115,7 +117,7 @@ def getnags(cur):
 
         nag += "Please try to post weekly to keep other informed of your work."
 
-        nag += "\n\nhttp://statusupdates.dev.mozaws.net/"
+        nag += "\n\n%s" % url
 
         print "Sending nag to %s <%s>" % (userid, usermail)
 
