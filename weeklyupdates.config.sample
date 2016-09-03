@@ -11,6 +11,7 @@ smtp.server = 'mymailserver'
 smtp.username = 'mymailuser'
 smtp.password = 'mymailpassword'
 mozilla = True
+email.from = 'Mozilla Status Updates <weekly-updates@mozilla.com>'
 email.list_id = 'weekly-updates.mozilla.com'
 
 [/]
