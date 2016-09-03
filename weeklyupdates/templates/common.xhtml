@@ -5,6 +5,9 @@ from urllib import quote, urlencode
 import cherrypy
 import human
 import json
+
+title = cherrypy.request.app.config['weeklyupdates'].get('title',
+                                        'Mozilla Status Board')
 ?>
 <div xmlns="http://www.w3.org/1999/xhtml"
      xmlns:py="http://genshi.edgewall.org/"
@@ -20,7 +23,7 @@ import json
 
   <body py:match="body" class="normalcols" py:attrs="select('@*')">
     <div class="header">
-      <h3><a href="${genlink('')}">Mozilla Status Board</a>
+      <h3><a href="${genlink('')}">${title}</a>
         <py:if test="loginid is not None">
           <span class="pull-right small text-muted hidden-xs">${loginid}</span>
         </py:if>
