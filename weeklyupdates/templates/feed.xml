@@ -16,7 +16,7 @@ import datetime
   <updated py:if="not len(feedposts)">${feeddate(datetime.datetime.utcnow())}</updated>
 
   <author>
-    <name>Mozilla Status Board</name>
+    <name>${title}</name>
   </author>
 
   <entry py:for="post in feedposts">

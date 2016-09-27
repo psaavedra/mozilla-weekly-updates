@@ -5,7 +5,7 @@
   <xi:include href="common.xhtml"/>
 
   <head>
-    <title>Mozilla Status Board</title>
+    <title>${title}</title>
     <link href="${genlink('feed')}" type="application/atom+xml" rel="alternate" title="Recent Posts (All Users)"/>
     <link py:if="loginid is not None"
           href="${genlink('user', loginid, 'teamposts', 'feed')}"

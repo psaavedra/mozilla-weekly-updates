@@ -51,10 +51,14 @@ def kwargs_to_buglist(kwargs):
 class Root(object):
     @model.requires_db
     def index(self):
+        app = cherrypy.request.app
         loginid = cherrypy.request.loginid
 
         projects = model.get_projects()
-        iteration, daysleft = model.get_current_iteration()
+        if app.config['weeklyupdates'].get('mozilla', True):
+            iteration, daysleft = model.get_current_iteration()
+        else:
+            iteration, daysleft = 0,0
 
         if loginid is None:
             team = ()
@@ -67,7 +71,10 @@ class Root(object):
             team = model.get_user_projects(loginid)
             teamposts = model.get_teamposts(loginid)
             userposts, todaypost = model.get_user_posts(loginid)
-            bugs = model.get_currentbugs(loginid, iteration)
+            if app.config['weeklyupdates'].get('mozilla', True):
+                bugs = model.get_currentbugs(loginid, iteration)
+            else:
+                bugs = None
             recent = None
 
         return render('index.xhtml', projects=projects, recent=recent, team=team, bugs=bugs,
@@ -82,11 +89,13 @@ class Root(object):
 
     @model.requires_db
     def feed(self):
+        app = cherrypy.request.app
+        title = app.config['weeklyupdates'].get('title',"Mozilla Status Board")
         feedposts = model.get_feedposts()
 
         return renderatom(feedposts=feedposts,
                           feedurl=cherrypy.url('/feed'),
-                          title="Mozilla Status Board Updates: All Users")
+                          title="%s Updates: All Users" % title)
 
     @model.requires_db
     def login(self, **kwargs):
@@ -154,11 +163,13 @@ class Root(object):
 
     @model.requires_db
     def userpostsfeed(self, userid):
+        app = cherrypy.request.app
+        title = app.config['weeklyupdates'].get('title',"Mozilla Status Board")
         feedposts = model.get_user_feedposts(userid)
 
         return renderatom(feedposts=feedposts,
                           feedurl=cherrypy.url('/feed/%s' % userid),
-                          title="Mozilla Status Board Updates: user %s" % userid)
+                          title="%s Updates: user %s" % (title,userid))
 
     @model.requires_db
     def userteamposts(self, userid):
@@ -171,11 +182,13 @@ class Root(object):
 
     @model.requires_db
     def userteampostsfeed(self, userid):
+        app = cherrypy.request.app
+        title = app.config['weeklyupdates'].get('title',"Mozilla Status Board")
         teamposts = model.get_teamposts(userid)
 
         return renderatom(feedposts=teamposts,
                           feedurl=cherrypy.url('/user/%s/teamposts/feed' % userid),
-                          title="Mozilla Status Board Updates: User Team: %s" % userid)
+                          title="%s Updates: User Team: %s" % (title,userid))
 
     @require_login
     @model.requires_db
@@ -352,11 +365,13 @@ class Root(object):
 
     @model.requires_db
     def projectfeed(self, projectname):
+        app = cherrypy.request.app
+        title = app.config['weeklyupdates'].get('title',"Mozilla Status Board")
         posts = model.get_project_posts(projectname)
 
         return renderatom(feedposts=posts,
                           feedurl=cherrypy.url('/project/%s' % projectname),
-                          title="Mozilla Status Board Updates: Project %s" % projectname)
+                          title="%s Updates: Project %s" % (title,projectname))
 
     def markup(self):
         return render('markup.xhtml')

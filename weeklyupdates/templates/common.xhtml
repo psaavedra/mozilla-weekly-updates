@@ -5,6 +5,11 @@ from urllib import quote, urlencode
 import cherrypy
 import human
 import json
+
+title = cherrypy.request.app.config['weeklyupdates'].get('title','Mozilla Status Board')
+show_avatar = cherrypy.request.app.config['weeklyupdates'].get('avatar',True)
+mozilla_site = cherrypy.request.app.config['weeklyupdates'].get('mozilla',True)
+
 ?>
 <div xmlns="http://www.w3.org/1999/xhtml"
      xmlns:py="http://genshi.edgewall.org/"
@@ -20,7 +25,7 @@ import json
 
   <body py:match="body" class="normalcols" py:attrs="select('@*')">
     <div class="header">
-      <h3><a href="${genlink('')}">Mozilla Status Board</a>
+      <h3><a href="${genlink('')}">${title}</a>
         <py:if test="loginid is not None">
           <span class="pull-right small text-muted hidden-xs">${loginid}</span>
         </py:if>
@@ -68,8 +73,11 @@ import json
         </div>
       </py:when>
       <py:otherwise>
-        <h4 py:if="showuser" class="postuser"><a href="${genlink('user', post.userid)}">
-          <img class="avatar" src="https://avatars.io/email/${post.userid}" />${post.userid}</a>
+			<h4 py:if="showuser" class="postuser"><a href="${genlink('user', post.userid)}">
+          <py:if test="show_avatar">
+          <img class="avatar" src="https://avatars.io/email/${post.userid}" />
+          </py:if>
+          ${post.userid}</a>
           <small py:if="showdate" class="pull-right" title="Posted on ${post.postdate.isoformat()}">
             <span class="glyphicon glyphicon-time"></span>
             ${human.date(post.postdate, asdays=True)}
