@@ -273,6 +273,7 @@ class Root(object):
     @require_login
     @model.requires_db
     def post(self, completed, planned, tags, isedit=False, **kwargs):
+        app = cherrypy.request.app
         loginid = cherrypy.request.loginid
 
         assert cherrypy.request.method.upper() == 'POST'
@@ -323,7 +324,7 @@ class Root(object):
         if len(sendnow):
             mail.sendpost(email, sendnow,
                           model.create_post_with_bugs((loginid, today, now,
-                                completed, planned, tags), None, bugs))
+                                completed, planned, tags), None, bugs), app)
 
         raise cherrypy.HTTPRedirect(cherrypy.url('/'))
 

@@ -63,8 +63,9 @@ def sendmails(messages, app=None):
     else:
         sendmails_smtp(messages, fromaddress, app)
 
-def sendpost(fromaddress, recipientlist, post):
-    app = cherrypy.request.app
+def sendpost(fromaddress, recipientlist, post, app=None):
+    if app is None:
+        app = cherrypy.request.app
     list_id = app.config['weeklyupdates'].get('email.list_id',
                                               '<weekly-updates.mozilla.com>')
     subject = "Status Update: %s on %s" % (post.userid, post.postdate.isoformat())
@@ -84,8 +85,9 @@ def sendpost(fromaddress, recipientlist, post):
 
     sendmails(messages)
 
-def getdigest(to, subject, posts):
-    app = cherrypy.request.app
+def getdigest(to, subject, posts, app=None):
+    if app is None:
+        app = cherrypy.request.app
     list_id = app.config['weeklyupdates'].get('email.list_id',
                                               '<weekly-updates.mozilla.com>')
 
@@ -100,8 +102,9 @@ def getdigest(to, subject, posts):
 
     return message
 
-def getnags(cur):
-    app = cherrypy.request.app
+def getnags(cur, app=None):
+    if app is None:
+        app = cherrypy.request.app
     list_id = app.config['weeklyupdates'].get('email.list_id',
                                               '<weekly-updates.mozilla.com>')
     title = app.config['weeklyupdates'].get('title',
@@ -127,7 +130,7 @@ def getnags(cur):
         message['List-Id'] = list_id
         yield message
 
-def getdaily(cur):
+def getdaily(cur,app=None):
     yesterday = util.today() - datetime.timedelta(1)
 
     for userid, email, posts in model.iter_daily(cur, yesterday):
@@ -135,9 +138,9 @@ def getdaily(cur):
             print "Sending daily update to %s <%s>" % (userid, email)
             yield getdigest(email,
                             "Status Updates for %s" % yesterday.isoformat(),
-                            posts)
+                            posts, app=app)
 
-def getweekly(cur):
+def getweekly(cur, app=None):
     yesterday = util.today() - datetime.timedelta(1)
     lastweek = util.today() - datetime.timedelta(7)
 
@@ -147,17 +150,17 @@ def getweekly(cur):
 
             subject = "Status Updates for %s through %s" % \
                 (lastweek.isoformat(), yesterday.isoformat())
-            yield getdigest(email, subject, posts)
+            yield getdigest(email, subject, posts, app=app)
 
 def sendtodaysmail(app):
     db = app.connectionpool().connectfn()
     cur = db.cursor()
 
-    messages = [m for m in getnags(cur)]
-    messages += [m for m in getdaily(cur)]
+    messages = [m for m in getnags(cur,app=app)]
+    messages += [m for m in getdaily(cur,app=app)]
 
     if util.today().weekday() == 1:
-        messages += [m for m in getweekly(cur)]
+        messages += [m for m in getweekly(cur,app=app)]
 
     sendmails(messages, app=app)
 
