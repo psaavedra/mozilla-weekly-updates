@@ -169,7 +169,7 @@ class Root(object):
 
         return renderatom(feedposts=feedposts,
                           feedurl=cherrypy.url('/feed/%s' % userid),
-                          title="%s Updates: user %s" % (title,userid))
+                          title="%s Updates: user %s" % (title, userid))
 
     @model.requires_db
     def userteamposts(self, userid):
@@ -188,7 +188,7 @@ class Root(object):
 
         return renderatom(feedposts=teamposts,
                           feedurl=cherrypy.url('/user/%s/teamposts/feed' % userid),
-                          title="%s Updates: User Team: %s" % (title,userid))
+                          title="%s Updates: User Team: %s" % (title, userid))
 
     @require_login
     @model.requires_db

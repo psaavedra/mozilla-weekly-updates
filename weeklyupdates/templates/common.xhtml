@@ -73,10 +73,8 @@ mozilla_site = cherrypy.request.app.config['weeklyupdates'].get('mozilla',True)
         </div>
       </py:when>
       <py:otherwise>
-			<h4 py:if="showuser" class="postuser"><a href="${genlink('user', post.userid)}">
-          <py:if test="show_avatar">
-          <img class="avatar" src="https://avatars.io/email/${post.userid}" />
-          </py:if>
+        <h4 py:if="showuser" class="postuser"><a href="${genlink('user', post.userid)}">
+          <img py:if="show_avatar" class="avatar" src="https://avatars.io/email/${post.userid}" />
           ${post.userid}</a>
           <small py:if="showdate" class="pull-right" title="Posted on ${post.postdate.isoformat()}">
             <span class="glyphicon glyphicon-time"></span>
